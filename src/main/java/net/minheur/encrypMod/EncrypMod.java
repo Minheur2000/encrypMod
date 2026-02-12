@@ -1,4 +1,4 @@
-package your.packagename;
+package net.minheur.encrypMod;
 
 import net.minheur.potoflux.PotoFlux;
 import net.minheur.potoflux.loader.PotoFluxLoadingContext;
@@ -7,19 +7,19 @@ import net.minheur.potoflux.loader.mod.ModEventBus;
 import net.minheur.potoflux.loader.mod.events.RegisterLangEvent;
 import net.minheur.potoflux.logger.LogCategories;
 import net.minheur.potoflux.logger.PtfLogger;
-import your.packagename.tabs.Tabs;
-import your.packagename.translations.ExampleModTranslations;
+import net.minheur.encrypMod.tabs.Tabs;
+import net.minheur.encrypMod.translations.EncrypModTranslations;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Properties;
 
-@Mod(modId = ExampleMod.MOD_ID, version = "1.0", compatibleVersions = {"6.4", "6.5"})
-public class ExampleMod {
-    public static final String MOD_ID = "yourmodid";
+@Mod(modId = EncrypMod.MOD_ID, version = "1.0", compatibleVersions = {"6.4", "6.5"})
+public class EncrypMod {
+    public static final String MOD_ID = "encrypMod";
 
-    public ExampleMod() {
+    public EncrypMod() {
         ModEventBus modEventBus = PotoFluxLoadingContext.get().getModEventBus();
 
         modEventBus.addListener(Tabs::register);
@@ -27,7 +27,7 @@ public class ExampleMod {
     }
 
     private void onRegisterLang(RegisterLangEvent event) {
-        event.registerLang(new ExampleModTranslations());
+        event.registerLang(new EncrypModTranslations());
     }
 
     public static Path getModDir() {
@@ -41,7 +41,7 @@ public class ExampleMod {
     public static String getVersion() {
         try {
             Properties props = new Properties();
-            props.load(ExampleMod.class.getResourceAsStream("/modVersion.properties"));
+            props.load(EncrypMod.class.getResourceAsStream("/modVersion.properties"));
 
             return props.getProperty("version");
         } catch (IOException e) {

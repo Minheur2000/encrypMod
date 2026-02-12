@@ -2,7 +2,7 @@ plugins {
     id 'java'
 }
 
-group = 'your.packagename'
+group = 'net.minheur.encrypMod'
 version = '1.0'
 
 repositories {

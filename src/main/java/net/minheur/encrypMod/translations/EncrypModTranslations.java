@@ -1,11 +1,11 @@
-package your.packagename.translations;
+package net.minheur.encrypMod.translations;
 
+import net.minheur.encrypMod.EncrypMod;
 import net.minheur.potoflux.translations.AbstractTranslationsRegistry;
-import your.packagename.ExampleMod;
 
-public class ExampleModTranslations extends AbstractTranslationsRegistry {
-    public ExampleModTranslations() {
-        super(ExampleMod.MOD_ID);
+public class EncrypModTranslations extends AbstractTranslationsRegistry {
+    public EncrypModTranslations() {
+        super(EncrypMod.MOD_ID);
     }
 
     @Override
