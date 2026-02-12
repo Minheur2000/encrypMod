@@ -54,7 +54,7 @@ processResources {
 build.dependsOn jar
 
 tasks.named("sourcesJar") {
-    dependsOn(generateVersionProperties)
+    dependsOn(generateModVersionProperties)
 
     exclude("**/*.json", "**/*.toml", "**/*.lang")
 }
