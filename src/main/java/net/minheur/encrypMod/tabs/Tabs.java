@@ -20,7 +20,7 @@ public class Tabs {
     }
 
     // example tab
-    public final Tab ENCRYPT_TAB = LIST.add(new Tab(new ResourceLocation(EncrypMod.MOD_ID, "your_tab_id"), Translations.get("yourmodid:tabs.yourTab.name"), EncryptingTab.class));
+    public final Tab ENCRYPT_TAB = LIST.add(new Tab(new ResourceLocation(EncrypMod.MOD_ID, "encryptab"), Translations.get("encrypmod:tabs.encryptab.name"), EncryptingTab.class));
 
     public static void register(RegisterTabsEvent event) {
         INSTANCE = new Tabs();

@@ -10,14 +10,12 @@ public class EncrypModTranslations extends AbstractTranslationsRegistry {
 
     @Override
     protected void makeTranslation() {
-        addYourTab("name")
-                .en("Your tab name");
-        addYourTab("title")
-                .en("Your tab title");
+        addEncrypTab("name")
+                .en("EncrypMod");
     }
 
     // tabs helper
-    private TranslationBuilder addYourTab(String... children) {
-        return addTab("yourTab", children);
+    private TranslationBuilder addEncrypTab(String... children) {
+        return addTab("encryptab", children);
     }
 }
