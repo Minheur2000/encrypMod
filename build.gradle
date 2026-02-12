@@ -1,0 +1,89 @@
+plugins {
+    id 'java'
+}
+
+group = 'your.packagename'
+version = '1.0'
+
+repositories {
+    mavenCentral()
+    flatDir {
+        dirs 'libs'
+    }
+}
+
+ext {
+    gdxVersion = "1.12.1"
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+    withSourcesJar()
+    withJavadocJar()
+}
+
+
+dependencies {
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+
+    // PotoFlux
+    implementation name: 'PotoFlux-6.5'
+
+    // PotoFlux dependencies
+    implementation 'com.google.code.gson:gson:2.11.0'
+    implementation "org.reflections:reflections:0.10.2"
+    implementation 'com.formdev:flatlaf:3.3'
+
+    // LibGDX core
+    implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
+
+    // Desktop backend
+    implementation "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
+    implementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+}
+
+processResources {
+    filesMatching("modVersion.properties") {
+        expand "version": version
+    }
+}
+
+build.dependsOn jar
+
+tasks.named("sourcesJar") {
+    dependsOn(generateVersionProperties)
+
+    exclude("**/*.json", "**/*.toml", "**/*.lang")
+}
+
+tasks.register("generateModVersionProperties") {
+    def outputDir = file("$buildDir/generated/resources")
+    outputs.dir outputDir
+
+    doLast {
+        outputDir.mkdirs()
+        def file = new File(outputDir, "modVersion.properties")
+        file.text = "version=${project.version}"
+    }
+}
+
+sourceSets.main.resources.srcDir("$buildDir/generated/resources")
+
+tasks.processResources.dependsOn(generateModVersionProperties)
+
+test {
+    useJUnitPlatform()
+}
+
+tasks.register("run", JavaExec) {
+    group = "potoflux"
+    description = "Run PotoFlux"
+
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass.set("net.minheur.potoflux.PotoFlux")
+
+    args("devEnv")
+}
