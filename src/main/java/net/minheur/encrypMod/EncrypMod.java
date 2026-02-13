@@ -15,7 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Properties;
 
-@Mod(modId = EncrypMod.MOD_ID, version = "1.0", compatibleVersions = {"6.4", "6.5"})
+@Mod(modId = EncrypMod.MOD_ID, version = "1.1", compatibleVersions = {"6.4", "6.5"})
 public class EncrypMod {
     public static final String MOD_ID = "encrypmod";
 
