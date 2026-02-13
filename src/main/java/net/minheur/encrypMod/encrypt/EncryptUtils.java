@@ -5,11 +5,15 @@ import net.minheur.encrypMod.tabs.all.EncryptingTab;
 import net.minheur.potoflux.PotoFlux;
 import net.minheur.potoflux.logger.PtfLogger;
 
+import javax.annotation.Nonnull;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.security.MessageDigest;
@@ -49,20 +53,22 @@ public class EncryptUtils {
         try {
             byte[] fileBytes = Files.readAllBytes(selectedFile.toPath());
             byte[] encrypted = cipherCrypting(fileBytes, key, Cipher.ENCRYPT_MODE);
+            byte[] header = buildCryptedHeader(selectedFile);
 
             JFileChooser saveChooser = new JFileChooser();
             saveChooser.setSelectedFile(new File("output.encrypmod"));
             saveChooser.setFileFilter(new FileNameExtensionFilter("EncrypMod files", "encrypmod"));
+            saveChooser.setAcceptAllFileFilterUsed(false);
 
             if (saveChooser.showSaveDialog(panel) == JFileChooser.APPROVE_OPTION) {
 
-                File output = saveChooser.getSelectedFile();
+                File output = checkOut(saveChooser.getSelectedFile(), ".encrypmod");
 
-                if (!output.getName().endsWith(".encrypmod"))
-                    output = new File(output.getAbsolutePath() + ".encrypmod");
+                ByteArrayOutputStream out = new ByteArrayOutputStream();
+                out.write(header);
+                out.write(encrypted);
 
-                Files.write(output.toPath(), encrypted);
-
+                Files.write(output.toPath(), out.toByteArray());
                 resetEnc();
 
             }
@@ -72,6 +78,16 @@ public class EncryptUtils {
             JOptionPane.showMessageDialog(panel, "Encryption failed: " + e.getMessage());
         }
 
+    }
+
+    @Nonnull
+    private static File checkOut(File output, String suffix) {
+        String outName = output.getName().toLowerCase();
+        suffix = suffix.toLowerCase();
+
+        if (!outName.endsWith(suffix))
+            output = new File(output.getAbsolutePath() + suffix);
+        return output;
     }
 
     public static void decryptAndSave(File selectedFile, String key, JPanel panel) {
@@ -90,24 +106,20 @@ public class EncryptUtils {
 
         try {
             byte[] fileBytes = Files.readAllBytes(selectedFile.toPath());
-            byte[] encrypted = cipherCrypting(fileBytes, key, Cipher.DECRYPT_MODE);
+            EncryptedMetadata data = EncryptedMetadata.readMetadata(fileBytes);
+
+            byte[] decrypted = cipherCrypting(data.encryptedData(), key, Cipher.DECRYPT_MODE);
 
             JFileChooser saveChooser = new JFileChooser();
-            saveChooser.setSelectedFile(new File("output.txt"));
-            saveChooser.setFileFilter(new FileNameExtensionFilter("Text files", "txt"));
+            saveChooser.setSelectedFile(new File(data.originalName()));
 
-            if (saveChooser.showSaveDialog(panel) == JFileChooser.APPROVE_OPTION) {
+            if (saveChooser.showSaveDialog(panel) != JFileChooser.APPROVE_OPTION) return;
 
-                File output = saveChooser.getSelectedFile();
+            File output = checkOut(saveChooser.getSelectedFile(), data.originalExtension());
 
-                if (!output.getName().endsWith(".txt"))
-                    output = new File(output.getAbsolutePath() + ".txt");
+            Files.write(output.toPath(), decrypted);
+            resetEnc();
 
-                Files.write(output.toPath(), encrypted);
-
-                resetEnc();
-
-            }
         } catch (Exception e) {
             e.printStackTrace();
             PtfLogger.error("Could not decrypt / write file !", EncryptLog.DECRYPT);
@@ -116,8 +128,40 @@ public class EncryptUtils {
 
     }
 
+    private static byte[] buildCryptedHeader(File originFile) throws IOException {
+        String jsonMeta = """
+                {
+                "originalName": "%s",
+                "originalExtension": "%s",
+                "algorithm":"AES",
+                "version":1
+                }
+                """
+                .formatted(
+                        originFile.getName(),
+                        getExtension(originFile)
+                );
+
+        byte[] metaBytes = jsonMeta.getBytes(StandardCharsets.UTF_8);
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        DataOutputStream data = new DataOutputStream(out);
+
+        data.write("EMOD".getBytes(StandardCharsets.UTF_8)); // magic
+        data.writeByte(1); // version
+        data.writeShort(metaBytes.length);
+        data.write(metaBytes);
+
+        return out.toByteArray();
+    }
+
     private static void resetEnc() {
         EncryptingTab t = ((EncryptingTab) PotoFlux.app.getTabMap().get(Tabs.INSTANCE.ENCRYPT_TAB));
         t.reset();
+    }
+    public static String getExtension(File file) {
+        String name = file.getName();
+        int lastDot = name.lastIndexOf('.');
+        return lastDot == -1 ? "" : name.substring(lastDot).toLowerCase();
     }
 }

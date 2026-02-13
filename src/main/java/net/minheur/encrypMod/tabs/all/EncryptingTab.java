@@ -79,32 +79,10 @@ public class EncryptingTab extends BaseTab {
     }
 
     private void chooseFile() {
-        JFileChooser chooser = getChooser();
+        JFileChooser chooser = new JFileChooser();
 
         if (chooser.showOpenDialog(PANEL) == JFileChooser.APPROVE_OPTION)
             selectedFile = chooser.getSelectedFile();
-    }
-
-    private String getExtension(File file) {
-        String name = file.getName();
-        int lastDot = name.lastIndexOf('.');
-        return lastDot == -1 ? "" : name.substring(lastDot).toLowerCase();
-    }
-
-    @Nonnull
-    private static JFileChooser getChooser() {
-        JFileChooser chooser = new JFileChooser();
-
-        FileNameExtensionFilter txtFilter = new FileNameExtensionFilter("Text files - encrypt", "txt");
-        FileNameExtensionFilter encFilter = new FileNameExtensionFilter("EncrypMod files - decrypt", "encrypmod");
-
-        chooser.addChoosableFileFilter(txtFilter);
-        chooser.addChoosableFileFilter(encFilter);
-
-        chooser.setAcceptAllFileFilterUsed(false);
-        chooser.setFileFilter(txtFilter);
-
-        return chooser;
     }
 
     public void reset() {
