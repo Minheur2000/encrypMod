@@ -25,7 +25,7 @@ public class EncryptingTab extends BaseTab {
     protected void setPanel() {
         PANEL.setLayout(new BoxLayout(PANEL, BoxLayout.Y_AXIS));
 
-        selectButton = new JButton("Select .txt file");
+        selectButton = new JButton("Select file");
         encryptButton = new JButton("Encrypt & Save");
         decryptButton = new JButton("Decrypt & Save");
 
@@ -59,9 +59,9 @@ public class EncryptingTab extends BaseTab {
     }
 
     private void performEncrypt() {
-        if (!getExtension(selectedFile).equals(".txt")) {
-            PtfLogger.error("Not a .txt file!", EncryptLog.ENCRYPT);
-            JOptionPane.showMessageDialog(PANEL, "Not a .txt file selected!");
+        if (getExtension(selectedFile).equals(".encrypmod")) {
+            PtfLogger.error("Can't encrypt a file that is already !", EncryptLog.ENCRYPT);
+            JOptionPane.showMessageDialog(PANEL, "Can't encrypt a file that already is!");
             return;
         }
 
@@ -70,7 +70,7 @@ public class EncryptingTab extends BaseTab {
 
     private void performDecrypt() {
         if (!getExtension(selectedFile).equals(".encrypmod")) {
-            PtfLogger.error("Not a .encrypmod file!", EncryptLog.ENCRYPT);
+            PtfLogger.error("Not a .encrypmod file!", EncryptLog.DECRYPT);
             JOptionPane.showMessageDialog(PANEL, "Not a .encrypmod file selected!");
             return;
         }
