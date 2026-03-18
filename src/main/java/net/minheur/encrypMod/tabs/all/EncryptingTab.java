@@ -71,7 +71,7 @@ public class EncryptingTab extends BaseTab {
     private void performDecrypt() {
         if (!getExtension(selectedFile).equals(".encrypmod")) {
             PtfLogger.error("Not a .encrypmod file!", EncryptLog.DECRYPT);
-            JOptionPane.showMessageDialog(PANEL, "Not a .encrypmod file selected!");
+            JOptionPane.showMessageDialog(PANEL, "Not a .encrypmod file selected!", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 

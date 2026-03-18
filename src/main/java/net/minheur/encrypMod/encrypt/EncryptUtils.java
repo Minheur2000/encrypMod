@@ -39,13 +39,13 @@ public class EncryptUtils {
     public static void encryptAndSave(File selectedFile, String key, JPanel panel) {
         if (selectedFile == null) {
             PtfLogger.error("Could not encrypt null file!", EncryptLog.ENCRYPT);
-            JOptionPane.showMessageDialog(panel, "No file selected!");
+            JOptionPane.showMessageDialog(panel, "No file selected!", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
         if (!isValidKey(key)) {
             PtfLogger.error("Could not encrypt with invalid key!", EncryptLog.ENCRYPT);
-            JOptionPane.showMessageDialog(panel, "Key must have 12 alphanumeric characters!");
+            JOptionPane.showMessageDialog(panel, "Key must have 12 alphanumeric characters!", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
