@@ -12,10 +12,6 @@ repositories {
     }
 }
 
-ext {
-    gdxVersion = "1.12.1"
-}
-
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(17)
@@ -23,7 +19,6 @@ java {
     withSourcesJar()
     withJavadocJar()
 }
-
 
 dependencies {
     testImplementation platform('org.junit:junit-bom:5.10.0')
@@ -36,13 +31,6 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.11.0'
     implementation "org.reflections:reflections:0.10.2"
     implementation 'com.formdev:flatlaf:3.3'
-
-    // LibGDX core
-    implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
-
-    // Desktop backend
-    implementation "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
-    implementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
 }
 
 processResources {
