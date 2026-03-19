@@ -16,6 +16,7 @@ public class EncryptingTab extends BaseTab {
 
     private File selectedFile;
     private JTextField keyField;
+    private JTextField fileName;
 
     private JButton selectButton;
     private JButton encryptButton;
@@ -39,8 +40,17 @@ public class EncryptingTab extends BaseTab {
         keyField.setMaximumSize(new Dimension(250, 60));
         keyField.setPreferredSize(new Dimension(250, 30));
 
+        fileName = new JTextField();
+
+        fileName.setBorder(BorderFactory.createTitledBorder("Selected file"));
+        fileName.setMaximumSize(new Dimension(250, 60));
+        fileName.setPreferredSize(new Dimension(250, 30));
+        fileName.setEditable(false);
+        fileName.setText("None selected");
+
         selectButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         keyField.setAlignmentX(Component.CENTER_ALIGNMENT);
+        fileName.setAlignmentX(Component.CENTER_ALIGNMENT);
         encryptButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         decryptButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
@@ -50,6 +60,8 @@ public class EncryptingTab extends BaseTab {
 
         PANEL.add(Box.createVerticalStrut(20));
         PANEL.add(selectButton);
+        PANEL.add(Box.createVerticalStrut(5));
+        PANEL.add(fileName);
         PANEL.add(Box.createVerticalStrut(15));
         PANEL.add(keyField);
         PANEL.add(Box.createVerticalStrut(15));
@@ -81,8 +93,10 @@ public class EncryptingTab extends BaseTab {
     private void chooseFile() {
         JFileChooser chooser = new JFileChooser();
 
-        if (chooser.showOpenDialog(PANEL) == JFileChooser.APPROVE_OPTION)
+        if (chooser.showOpenDialog(PANEL) == JFileChooser.APPROVE_OPTION) {
             selectedFile = chooser.getSelectedFile();
+            fileName.setText(selectedFile.getName());
+        }
     }
 
     public void reset() {
