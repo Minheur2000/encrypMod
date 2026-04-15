@@ -7,14 +7,11 @@ version = '1.4'
 
 repositories {
     mavenCentral()
-    flatDir {
-        dirs 'libs'
-    }
     maven {
         url = uri ("https://maven.pkg.github.com/TechnoMastery/PotoFlux")
         credentials {
-            username = System.getenv("gpr.user")
-            password = System.getenv("gpr.key")
+            username = project.findProperty("gpr.user")
+            password = project.findProperty("gpr.key")
         }
     }
 }
