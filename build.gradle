@@ -10,6 +10,13 @@ repositories {
     flatDir {
         dirs 'libs'
     }
+    maven {
+        url = uri ("https://maven.pkg.github.com/TechnoMastery/PotoFlux")
+        credentials {
+            username = System.getenv("gpr.user")
+            password = System.getenv("gpr.key")
+        }
+    }
 }
 
 java {
@@ -25,7 +32,8 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter'
 
     // PotoFlux
-    implementation name: 'PotoFlux-6.7'
+    // implementation name: 'PotoFlux-6.7'
+    implementation 'net.minheur:potoflux:6.9'
 
     // PotoFlux dependencies
     implementation 'com.google.code.gson:gson:2.11.0'
