@@ -4,9 +4,7 @@ import net.minheur.encrypMod.encrypt.EncryptLog;
 import net.minheur.potoflux.logger.PtfLogger;
 import net.minheur.potoflux.screen.tabs.BaseTab;
 
-import javax.annotation.Nonnull;
 import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.io.File;
 

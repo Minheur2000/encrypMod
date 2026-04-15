@@ -5,7 +5,7 @@ import net.minheur.encrypMod.tabs.all.EncryptingTab;
 import net.minheur.potoflux.PotoFlux;
 import net.minheur.potoflux.logger.PtfLogger;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 import javax.swing.*;
@@ -80,7 +80,7 @@ public class EncryptUtils {
 
     }
 
-    @Nonnull
+    @NotNull
     private static File checkOut(File output, String suffix) {
         String outName = output.getName().toLowerCase();
         suffix = suffix.toLowerCase();
