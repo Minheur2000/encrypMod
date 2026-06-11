@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'net.minheur.encrypMod'
-version = '1.4'
+version = '2.0'
 
 def javafxversion = "17.0.10"
 
