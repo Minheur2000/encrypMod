@@ -9,6 +9,7 @@ group = 'net.minheur'
 version = '2.0'
 
 def javafxversion = "17.0.10"
+def ptfVersion = "7.0"
 
 publishing {
     publications {
@@ -28,6 +29,12 @@ publishing {
         }
     }
 
+}
+
+javadoc {
+    options.links(
+            "https://technomastery.github.io/PotoFluxAppData/javadoc/$ptfVersion"
+    )
 }
 
 repositories {
@@ -62,7 +69,7 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter'
 
     // PotoFlux
-    implementation 'net.minheur:potoflux:7.0'
+    implementation "net.minheur:potoflux:$ptfVersion"
 
     // PotoFlux dependencies
     // implementation 'com.google.code.gson:gson:2.11.0'
