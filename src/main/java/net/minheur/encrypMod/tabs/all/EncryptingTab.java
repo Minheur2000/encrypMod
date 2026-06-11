@@ -1,100 +1,103 @@
 package net.minheur.encrypMod.tabs.all;
 
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.StackPane;
+import javafx.stage.FileChooser;
 import net.minheur.encrypMod.encrypt.EncryptLog;
+import net.minheur.potoflux.PotoFlux;
 import net.minheur.potoflux.logger.PtfLogger;
-import net.minheur.potoflux.screen.tabs.BaseTab;
+import net.minheur.potoflux.screen.tabs.BaseVTab;
+import net.minheur.potoflux.translations.Translations;
+import net.minheur.potoflux.ui.UiUtils;
 
-import javax.swing.*;
-import java.awt.*;
 import java.io.File;
 
 import static net.minheur.encrypMod.encrypt.EncryptUtils.*;
 
-public class EncryptingTab extends BaseTab {
+public class EncryptingTab extends BaseVTab<StackPane> {
 
     private File selectedFile;
-    private JTextField keyField;
-    private JTextField fileName;
+    private TextField keyField;
+    private TextField fileName;
 
-    private JButton selectButton;
-    private JButton encryptButton;
-    private JButton decryptButton;
+    private Button selectButton;
+    private Button encryptButton;
+    private Button decryptButton;
+
+    @Override
+    protected void instantiate() {
+        boxPreset();
+        PANEL = new StackPane(vContent);
+    }
 
     @Override
     protected void setPanel() {
-        PANEL.setLayout(new BoxLayout(PANEL, BoxLayout.Y_AXIS));
-
-        selectButton = new JButton("Select file");
-        encryptButton = new JButton("Encrypt & Save");
-        decryptButton = new JButton("Decrypt & Save");
+        selectButton = new Button("Select file"); // todo
+        encryptButton = new Button("Encrypt & Save"); // todo
+        decryptButton = new Button("Decrypt & Save"); // todo
 
         setupButton();
     }
 
+    @Override
+    public String getName() {
+        return Translations.get("encrypmod:tabs.encryptab.name");
+    }
+
     private void setupButton() {
-        keyField = new JTextField();
+        keyField = new TextField();
 
-        keyField.setBorder(BorderFactory.createTitledBorder("12-char key"));
-        keyField.setMaximumSize(new Dimension(250, 60));
-        keyField.setPreferredSize(new Dimension(250, 30));
+        keyField.setMaxSize(250, 60);
+        keyField.setPrefSize(250, 30);
+        keyField.setPromptText("14-char key"); // todo
 
-        fileName = new JTextField();
+        fileName = new TextField();
 
-        fileName.setBorder(BorderFactory.createTitledBorder("Selected file"));
-        fileName.setMaximumSize(new Dimension(250, 60));
-        fileName.setPreferredSize(new Dimension(250, 30));
+        fileName.setMaxSize(250, 60);
+        fileName.setPrefSize(250, 30);
         fileName.setEditable(false);
-        fileName.setText("None selected");
+        fileName.setText("No file selected"); // todo
 
-        selectButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        keyField.setAlignmentX(Component.CENTER_ALIGNMENT);
-        fileName.setAlignmentX(Component.CENTER_ALIGNMENT);
-        encryptButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        decryptButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        selectButton.setOnAction(e -> chooseFile());
+        encryptButton.setOnAction(e -> performEncrypt());
+        decryptButton.setOnAction(e -> performDecrypt());
 
-        selectButton.addActionListener(e -> chooseFile());
-        encryptButton.addActionListener(e -> performEncrypt());
-        decryptButton.addActionListener(e -> performDecrypt());
-
-        PANEL.add(Box.createVerticalStrut(20));
-        PANEL.add(selectButton);
-        PANEL.add(Box.createVerticalStrut(5));
-        PANEL.add(fileName);
-        PANEL.add(Box.createVerticalStrut(15));
-        PANEL.add(keyField);
-        PANEL.add(Box.createVerticalStrut(15));
-        PANEL.add(encryptButton);
-        PANEL.add(Box.createVerticalStrut(15));
-        PANEL.add(decryptButton);
+        vContent.getChildren().addAll(
+                selectButton,
+                fileName, keyField,
+                encryptButton, decryptButton
+        );
     }
 
     private void performEncrypt() {
         if (getExtension(selectedFile).equals(".encrypmod")) {
             PtfLogger.error("Can't encrypt a file that is already !", EncryptLog.ENCRYPT);
-            JOptionPane.showMessageDialog(PANEL, "Can't encrypt a file that already is!");
+            UiUtils.showErrorPane("Can't encrypt a file that already is!");
             return;
         }
 
-        encryptAndSave(selectedFile, keyField.getText(), PANEL);
+        encryptAndSave(selectedFile, keyField.getText());
     }
 
     private void performDecrypt() {
         if (!getExtension(selectedFile).equals(".encrypmod")) {
             PtfLogger.error("Not a .encrypmod file!", EncryptLog.DECRYPT);
-            JOptionPane.showMessageDialog(PANEL, "Not a .encrypmod file selected!", "Error", JOptionPane.ERROR_MESSAGE);
+            UiUtils.showErrorPane("Not a .encrypmod file selected!");
             return;
         }
 
-        decryptAndSave(selectedFile, keyField.getText(), PANEL);
+        decryptAndSave(selectedFile, keyField.getText());
     }
 
     private void chooseFile() {
-        JFileChooser chooser = new JFileChooser();
+        FileChooser chooser = new FileChooser();
 
-        if (chooser.showOpenDialog(PANEL) == JFileChooser.APPROVE_OPTION) {
-            selectedFile = chooser.getSelectedFile();
-            fileName.setText(selectedFile.getName());
-        }
+        File file = chooser.showOpenDialog(PotoFlux.app.getStage());
+        if (file == null) return;
+
+        selectedFile = file;
+        fileName.setText(selectedFile.getName());
     }
 
     public void reset() {

@@ -1,15 +1,15 @@
 package net.minheur.encrypMod.encrypt;
 
+import javafx.stage.FileChooser;
 import net.minheur.encrypMod.tabs.Tabs;
 import net.minheur.encrypMod.tabs.all.EncryptingTab;
 import net.minheur.potoflux.PotoFlux;
 import net.minheur.potoflux.logger.PtfLogger;
 
+import net.minheur.potoflux.ui.UiUtils;
 import org.jetbrains.annotations.NotNull;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
-import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -36,16 +36,16 @@ public class EncryptUtils {
         return cipher.doFinal(data);
     }
 
-    public static void encryptAndSave(File selectedFile, String key, JPanel panel) {
+    public static void encryptAndSave(File selectedFile, String key) {
         if (selectedFile == null) {
             PtfLogger.error("Could not encrypt null file!", EncryptLog.ENCRYPT);
-            JOptionPane.showMessageDialog(panel, "No file selected!", "Error", JOptionPane.ERROR_MESSAGE);
+            UiUtils.showErrorPane("No file selected !"); // todo
             return;
         }
 
         if (!isValidKey(key)) {
             PtfLogger.error("Could not encrypt with invalid key!", EncryptLog.ENCRYPT);
-            JOptionPane.showMessageDialog(panel, "Key must have 12 alphanumeric characters!", "Error", JOptionPane.ERROR_MESSAGE);
+            UiUtils.showErrorPane("Key must have 12 alphanumeric characters!"); // todo
             return;
         }
 
@@ -55,27 +55,31 @@ public class EncryptUtils {
             byte[] encrypted = cipherCrypting(fileBytes, key, Cipher.ENCRYPT_MODE);
             byte[] header = buildCryptedHeader(selectedFile);
 
-            JFileChooser saveChooser = new JFileChooser();
-            saveChooser.setSelectedFile(new File("output.encrypmod"));
-            saveChooser.setFileFilter(new FileNameExtensionFilter("EncrypMod files", "encrypmod"));
-            saveChooser.setAcceptAllFileFilterUsed(false);
+            FileChooser saveChooser = new FileChooser();
+            saveChooser.setInitialFileName("output.encrypmod");
+            saveChooser.getExtensionFilters().add(
+                    new FileChooser.ExtensionFilter(
+                            "EncrypMod files (*.encrypmod)",
+                            "*.encrypmod"
+                    )
+            );
 
-            if (saveChooser.showSaveDialog(panel) == JFileChooser.APPROVE_OPTION) {
+            File file = saveChooser.showSaveDialog(PotoFlux.app.getStage());
+            if (file == null) return;
 
-                File output = checkOut(saveChooser.getSelectedFile(), ".encrypmod");
+            File output = checkOut(file, ".encrypmod");
 
-                ByteArrayOutputStream out = new ByteArrayOutputStream();
-                out.write(header);
-                out.write(encrypted);
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            out.write(header);
+            out.write(encrypted);
 
-                Files.write(output.toPath(), out.toByteArray());
-                resetEnc();
+            Files.write(output.toPath(), out.toByteArray());
+            resetEnc();
 
-            }
         } catch (Exception e) {
             e.printStackTrace();
             PtfLogger.error("Could not encrypt / write file !", EncryptLog.ENCRYPT);
-            JOptionPane.showMessageDialog(panel, "Encryption failed: " + e.getMessage());
+            UiUtils.showErrorPane("Encryption failed: " + e.getMessage()); // todo
         }
 
     }
@@ -90,16 +94,16 @@ public class EncryptUtils {
         return output;
     }
 
-    public static void decryptAndSave(File selectedFile, String key, JPanel panel) {
+    public static void decryptAndSave(File selectedFile, String key) {
         if (selectedFile == null) {
             PtfLogger.error("Could not decrypt null file!", EncryptLog.DECRYPT);
-            JOptionPane.showMessageDialog(panel, "No file selected!");
+            UiUtils.showErrorPane("No file selected!"); // todo
             return;
         }
 
         if (!isValidKey(key)) {
             PtfLogger.error("Could not decrypt with invalid key!", EncryptLog.DECRYPT);
-            JOptionPane.showMessageDialog(panel, "Key must have 12 alphanumeric characters!");
+            UiUtils.showErrorPane("Key must have 12 alphanumeric characters!"); // todo
             return;
         }
 
@@ -110,12 +114,13 @@ public class EncryptUtils {
 
             byte[] decrypted = cipherCrypting(data.encryptedData(), key, Cipher.DECRYPT_MODE);
 
-            JFileChooser saveChooser = new JFileChooser();
-            saveChooser.setSelectedFile(new File(data.originalName()));
+            FileChooser saveChooser = new FileChooser();
+            saveChooser.setInitialFileName(data.originalName());
 
-            if (saveChooser.showSaveDialog(panel) != JFileChooser.APPROVE_OPTION) return;
+            File file = saveChooser.showSaveDialog(PotoFlux.app.getStage());
+            if (file == null) return;
 
-            File output = checkOut(saveChooser.getSelectedFile(), data.originalExtension());
+            File output = checkOut(file, data.originalExtension());
 
             Files.write(output.toPath(), decrypted);
             resetEnc();
@@ -123,7 +128,7 @@ public class EncryptUtils {
         } catch (Exception e) {
             e.printStackTrace();
             PtfLogger.error("Could not decrypt / write file !", EncryptLog.DECRYPT);
-            JOptionPane.showMessageDialog(panel, "Decryption failed: " + e.getMessage());
+            UiUtils.showErrorPane("Decryption failed: " + e.getMessage()); // todo
         }
 
     }
@@ -156,7 +161,7 @@ public class EncryptUtils {
     }
 
     private static void resetEnc() {
-        EncryptingTab t = ((EncryptingTab) PotoFlux.app.getTabMap().get(Tabs.INSTANCE.ENCRYPT_TAB));
+        EncryptingTab t = ((EncryptingTab) PotoFlux.app.getTabMap().get(Tabs.ENCRYPT_TAB.get()));
         t.reset();
     }
     public static String getExtension(File file) {

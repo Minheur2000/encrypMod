@@ -15,7 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Properties;
 
-@Mod(modId = EncrypMod.MOD_ID, version = "1.4", compatibleVersionUrl = "https://technomastery.github.io/PotoFluxAppData/modVersions/encrypMod.json")
+@Mod(modId = EncrypMod.MOD_ID, version = "1.4", compatibleVersions = {"7.0"}, compatibleVersionUrl = "https://technomastery.github.io/PotoFluxAppData/modVersions/encrypMod.json")
 public class EncrypMod {
     public static final String MOD_ID = "encrypmod";
 
