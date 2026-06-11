@@ -71,6 +71,8 @@ public class EncryptingTab extends BaseVTab<StackPane> {
     }
 
     private void performEncrypt() {
+        if (selectedFile == null) return;
+
         if (getExtension(selectedFile).equals(".encrypmod")) {
             PtfLogger.error("Can't encrypt a file that is already !", EncryptLog.ENCRYPT);
             UiUtils.showErrorPane("Can't encrypt a file that already is!"); // todo
@@ -81,6 +83,8 @@ public class EncryptingTab extends BaseVTab<StackPane> {
     }
 
     private void performDecrypt() {
+        if (selectedFile == null) return;
+
         if (!getExtension(selectedFile).equals(".encrypmod")) {
             PtfLogger.error("Not a .encrypmod file!", EncryptLog.DECRYPT);
             UiUtils.showErrorPane("Not a .encrypmod file selected!"); // todo
