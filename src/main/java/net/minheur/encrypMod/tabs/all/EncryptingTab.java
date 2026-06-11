@@ -50,7 +50,7 @@ public class EncryptingTab extends BaseVTab<StackPane> {
 
         keyField.setMaxSize(250, 60);
         keyField.setPrefSize(250, 30);
-        keyField.setPromptText("14-char key"); // todo
+        keyField.setPromptText("12-char key"); // todo
 
         fileName = new TextField();
 
