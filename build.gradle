@@ -70,9 +70,6 @@ dependencies {
 
     // PotoFlux
     implementation "net.minheur:potoflux:$ptfVersion"
-
-    // PotoFlux dependencies
-    // implementation 'com.google.code.gson:gson:2.11.0'
 }
 
 processResources {
