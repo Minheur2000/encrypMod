@@ -42,14 +42,18 @@ javadoc {
 }
 
 repositories {
-    mavenCentral()
-    maven {
-        url = uri("https://maven.pkg.github.com/TechnoMastery/PotoFlux")
-        credentials {
-            username = project.findProperty("gpr.user")
-            password = project.findProperty("gpr.key")
+    def githubMaven = { String repo ->
+        maven {
+            url = uri("https://maven.pkg.github.com/$repo")
+            credentials {
+                username = project.findProperty("grp.user")
+                password = project.findProperty("grp.key")
+            }
         }
     }
+
+    mavenCentral()
+    githubMaven("TechnoMastery/PotoFlux")
 }
 
 java {
