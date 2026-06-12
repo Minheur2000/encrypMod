@@ -46,8 +46,8 @@ repositories {
         maven {
             url = uri("https://maven.pkg.github.com/$repo")
             credentials {
-                username = project.findProperty("grp.user")
-                password = project.findProperty("grp.key")
+                username = project.findProperty("gpr.user")
+                password = project.findProperty("gpr.key")
             }
         }
     }
